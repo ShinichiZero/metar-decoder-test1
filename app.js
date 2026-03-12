@@ -82,13 +82,14 @@ const WX_CODES = {
 function parseWxCode(token) {
   let desc = '';
   let t = token;
+  let hasVicinity = false;
 
   // Intensity prefix
   if (t.startsWith('+')) { desc += 'Heavy '; t = t.slice(1); }
   else if (t.startsWith('-')) { desc += 'Light '; t = t.slice(1); }
 
   // Proximity VC
-  if (t.startsWith('VC')) { desc += 'In the Vicinity '; t = t.slice(2); }
+  if (t.startsWith('VC')) { hasVicinity = true; t = t.slice(2); }
 
   // Descriptor (2-letter codes)
   const descriptors = ['MI','PR','BC','DR','BL','SH','TS','FZ'];
@@ -104,17 +105,25 @@ function parseWxCode(token) {
     if (t.length > 0) desc += ' + ';
   }
 
+  if (hasVicinity) {
+    desc += (desc ? ' ' : '') + 'In the Vicinity';
+  }
+
   return desc.trim() || token;
 }
 
-const EASTER_EGG_METAR = 'METAR LOVE 140214Z 00000KT 9999 VCFG RMK MADE W/ LV FOR THE MST BUTF GIRL I HV EVR SEEN';
+const SPECIAL_METARS = {
+  THIA: 'METAR LOVE 141402Z 00000KT 9999 VCFG RMK MADE WITH LOVE FOR THE MOST BEAUTIFUL GIRL I HAVE EVER SEEN',
+  '1402': 'METAR LOVE 141402Z 00000KT 9999 VCFG RMK MADE WITH LOVE FOR THE MOST BEAUTIFUL GIRL I HAVE EVER SEEN',
+  QNH14: 'METAR AMOR 141402Z 00000KT 9999 FEW020 RMK EVERY SKY TURNS CAVOK WHEN I AM WITH YOU'
+};
 
 function parseMetar(raw) {
   // Easter egg: special codes trigger a hidden METAR.
-  // Uses the raw EASTER_EGG_METAR constant directly to avoid recursion.
+  // Uses the raw SPECIAL_METARS constants directly to avoid recursion.
   const normalized = raw.trim().toUpperCase();
-  if (normalized === 'THIA' || normalized === '1402') {
-    raw = EASTER_EGG_METAR;
+  if (SPECIAL_METARS[normalized]) {
+    raw = SPECIAL_METARS[normalized];
   }
 
   const result = {
