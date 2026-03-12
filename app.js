@@ -6,6 +6,23 @@
 'use strict';
 
 /* ================================================================
+   SECURITY UTILITIES
+   ================================================================ */
+
+/**
+ * Escape HTML special characters to prevent XSS when inserting
+ * user-supplied text into innerHTML.
+ */
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/* ================================================================
    METAR PARSER
    ================================================================ */
 
@@ -433,11 +450,11 @@ function renderResults(parsed) {
 
   /* ── Remarks ───────────────────────────────────── */
   if (parsed.remarks) {
-    grid.appendChild(makeCard('📝', 'Remarks', parsed.remarks, '', '--col-raw'));
+    grid.appendChild(makeCard('📝', 'Remarks', escapeHtml(parsed.remarks), '', '--col-raw'));
   }
 
   /* ── Raw METAR (full-width) ────────────────────── */
-  const rawCard = makeCard('📄', 'Raw METAR', parsed.raw, '', '--col-raw');
+  const rawCard = makeCard('📄', 'Raw METAR', escapeHtml(parsed.raw), '', '--col-raw');
   rawCard.classList.add('card-full');
   grid.appendChild(rawCard);
 }

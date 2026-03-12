@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Decode raw METAR aviation weather reports instantly — works offline." />
   <meta name="theme-color" content="#6c3fc5" />
+  <!-- Content Security Policy: restrict resource loading to same origin only.
+       style-src 'unsafe-inline' is required for the dynamic wind-arrow CSS
+       custom property set via an inline style attribute in app.js. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; manifest-src 'self'; connect-src 'self'; worker-src 'self';" />
 
   <title>METAR Decoder</title>
 
