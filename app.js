@@ -111,10 +111,10 @@ const EASTER_EGG_METAR = 'METAR LOVE 140214Z 00000KT 9999 VCFG RMK MADE W/ LV FO
 
 function parseMetar(raw) {
   // Easter egg: special codes trigger a hidden METAR.
-  // Uses the raw EASTER_EGG_METAR constant directly to avoid recursion.
+  // Short-circuit immediately so the non-standard string never hits the parser.
   const normalized = raw.trim().toUpperCase();
   if (normalized === 'THIA' || normalized === '1402') {
-    raw = EASTER_EGG_METAR;
+    return { _isEasterEgg: true, raw: EASTER_EGG_METAR };
   }
 
   const result = {
@@ -469,6 +469,19 @@ function renderResults(parsed) {
 }
 
 /* ================================================================
+   EASTER EGG OVERLAY
+   ================================================================ */
+function showEasterEgg() {
+  const overlay = document.getElementById('easter-egg-overlay');
+  if (overlay) overlay.classList.add('visible');
+}
+
+function dismissEasterEgg() {
+  const overlay = document.getElementById('easter-egg-overlay');
+  if (overlay) overlay.classList.remove('visible');
+}
+
+/* ================================================================
    UI LOGIC
    ================================================================ */
 const inputEl   = document.getElementById('metar-input');
@@ -490,6 +503,11 @@ function decode() {
 
   const parsed = parseMetar(raw);
 
+  if (parsed._isEasterEgg) {
+    showEasterEgg();
+    return;
+  }
+
   if (!parsed.station) {
     errorEl.textContent = '⚠️  ' + (parsed.errors[0] || 'Invalid METAR — could not find station ID.');
     errorEl.classList.add('visible');
@@ -501,6 +519,17 @@ function decode() {
 
   // Scroll to results smoothly
   setTimeout(() => resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+}
+
+// Easter egg dismiss button and overlay background click
+const easterEggDismissBtn = document.getElementById('easter-egg-dismiss-btn');
+if (easterEggDismissBtn) easterEggDismissBtn.addEventListener('click', dismissEasterEgg);
+
+const easterEggOverlay = document.getElementById('easter-egg-overlay');
+if (easterEggOverlay) {
+  easterEggOverlay.addEventListener('click', e => {
+    if (e.target === easterEggOverlay) dismissEasterEgg();
+  });
 }
 
 decodeBtn.addEventListener('click', decode);

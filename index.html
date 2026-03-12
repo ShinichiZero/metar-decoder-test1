@@ -100,6 +100,18 @@
     <p>METAR Decoder &mdash; built with HTML, CSS &amp; vanilla JS &mdash; works offline as a PWA</p>
   </footer>
 
+  <!-- ── EASTER EGG OVERLAY ────────────────────────────────── -->
+  <div id="easter-egg-overlay" class="easter-egg-overlay" role="dialog" aria-modal="true" aria-label="Easter egg message">
+    <div class="easter-egg-box">
+      <div class="easter-egg-hearts" aria-hidden="true">💜💙💜</div>
+      <h2 class="easter-egg-title">✨ Secret Transmission ✨</h2>
+      <p class="easter-egg-subtitle">A hidden METAR has been received…</p>
+      <div class="easter-egg-metar">METAR LOVE 140214Z 00000KT 9999 VCFG RMK MADE W/ LV FOR THE MST BUTF GIRL I HV EVR SEEN</div>
+      <p class="easter-egg-translation">Winds calm · Visibility unlimited · Vicinity fog · Made with love for the most beautiful girl I have ever seen 🌸</p>
+      <button class="easter-egg-dismiss" id="easter-egg-dismiss-btn">Dismiss ✕</button>
+    </div>
+  </div>
+
   <!-- App script -->
   <script src="app.js"></script>
 </body>
