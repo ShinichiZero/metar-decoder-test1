@@ -107,7 +107,16 @@ function parseWxCode(token) {
   return desc.trim() || token;
 }
 
+const EASTER_EGG_METAR = 'METAR LOVE 140214Z 00000KT 9999 VCFG RMK MADE W/ LV FOR THE MST BUTF GIRL I HV EVR SEEN';
+
 function parseMetar(raw) {
+  // Easter egg: special codes trigger a hidden METAR.
+  // Uses the raw EASTER_EGG_METAR constant directly to avoid recursion.
+  const normalized = raw.trim().toUpperCase();
+  if (normalized === 'THIA' || normalized === '1402') {
+    raw = EASTER_EGG_METAR;
+  }
+
   const result = {
     raw,
     type: null,
