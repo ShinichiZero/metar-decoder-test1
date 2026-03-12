@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Decode raw METAR aviation weather reports instantly — works offline." />
+  <meta name="theme-color" content="#6c3fc5" />
+
+  <title>METAR Decoder</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="app.css" />
+
+  <!-- PWA icons (generated inline for zero dependencies) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%236c3fc5'/%3E%3Ctext x='32' y='46' font-size='36' text-anchor='middle' fill='white'%3E⛅%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+
+  <!-- ── HEADER ─────────────────────────────────────────────── -->
+  <header>
+    <div class="logo">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- Stylised cloud with lightning bolt -->
+        <circle cx="18" cy="24" r="10" fill="#7c4dff" opacity=".85"/>
+        <circle cx="28" cy="20" r="13" fill="#7c4dff" opacity=".9"/>
+        <rect x="8" y="28" width="32" height="10" rx="5" fill="#7c4dff"/>
+        <polygon points="27,16 21,28 25,28 19,40 31,24 26,24" fill="#ffe082"/>
+      </svg>
+      <h1>METAR Decoder</h1>
+    </div>
+    <p class="subtitle">Paste a raw METAR string and decode it instantly — works offline</p>
+  </header>
+
+  <!-- ── INPUT PANEL ────────────────────────────────────────── -->
+  <section class="input-panel" aria-label="METAR input">
+    <label for="metar-input">Raw METAR String</label>
+    <div class="input-row">
+      <textarea
+        id="metar-input"
+        rows="3"
+        spellcheck="false"
+        autocorrect="off"
+        autocapitalize="characters"
+        placeholder="e.g.  KJFK 121551Z 28015KT 10SM FEW030 BKN070 22/12 A2992 RMK AO2"
+        aria-label="METAR string input"
+      ></textarea>
+      <button id="btn-decode" class="btn-decode" aria-label="Decode METAR">
+        ⚡ Decode
+      </button>
+      <button id="btn-clear" class="btn-clear" aria-label="Clear input">
+        ✕ Clear
+      </button>
+    </div>
+
+    <!-- Sample METARs -->
+    <div class="sample-row">
+      <span>Samples:</span>
+      <button class="btn-sample"
+        data-metar="KJFK 121551Z 28015KT 10SM FEW030 BKN070 22/12 A2992 RMK AO2">
+        KJFK
+      </button>
+      <button class="btn-sample"
+        data-metar="EGLL 121520Z 24012KT 9999 SCT025 BKN040 16/10 Q1008 NOSIG">
+        EGLL
+      </button>
+      <button class="btn-sample"
+        data-metar="YSSY 121430Z 18010KT 150V210 9999 FEW020 SCT045 19/14 Q1015">
+        YSSY
+      </button>
+      <button class="btn-sample"
+        data-metar="METAR KORD 121456Z AUTO 31008G18KT 3SM -RA BR OVC009 07/05 A2978 RMK AO2 P0000">
+        KORD (IFR)
+      </button>
+      <button class="btn-sample"
+        data-metar="EDDM 121520Z 09004KT 0800 FG VV002 03/02 Q1018">
+        EDDM (LIFR)
+      </button>
+    </div>
+  </section>
+
+  <!-- ── ERROR BANNER ───────────────────────────────────────── -->
+  <div id="error-banner" class="error-banner" role="alert" aria-live="polite"></div>
+
+  <!-- ── RESULTS ────────────────────────────────────────────── -->
+  <section id="results" class="results-section" aria-label="Decoded METAR fields">
+    <p class="results-header">Decoded Fields</p>
+    <div id="cards-grid" class="cards-grid"></div>
+  </section>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────── -->
+  <footer>
+    <p>METAR Decoder &mdash; built with HTML, CSS &amp; vanilla JS &mdash; works offline as a PWA</p>
+  </footer>
+
+  <!-- App script -->
+  <script src="app.js"></script>
+</body>
+</html>
