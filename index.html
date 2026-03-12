@@ -112,6 +112,56 @@
     </div>
   </div>
 
+  <!-- Rich easter-egg template (cloned by app.js when triggered) -->
+  <template id="easter-template">
+    <style>
+      /* Minimal scoped styles for the full-screen easter experience */
+      /* (Styles taken from the requested snippet; kept local to the template) */
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      #easter-root { position: fixed; inset: 0; z-index: 14000; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+      #bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 40%, #ff69b4 0%, #ff1493 30%, #c2185b 60%, #7b0d3a 100%); opacity: 0; transition: opacity 0.8s ease; z-index: 14000; pointer-events: none; }
+      #bg::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 28px 28px; }
+      #easter-root.visible { pointer-events: auto; }
+      #bg.on { opacity: 1; pointer-events: auto; }
+      .fheart { position: fixed; bottom: -80px; pointer-events: none; user-select: none; z-index: 14010; animation: floatUp linear infinite; }
+      @keyframes floatUp { 0% { transform: translateY(0) rotate(-12deg) scale(0.8); opacity: 0; } 8% { opacity: 1; } 88% { opacity: 0.7; } 100% { transform: translateY(-115vh) rotate(14deg) scale(1.1); opacity: 0; } }
+      #card { position: relative; z-index: 14020; background: linear-gradient(145deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.07) 100%); border: 1px solid rgba(255,255,255,0.38); border-radius: 28px; padding: 32px 36px; max-width: 640px; width: calc(100% - 48px); text-align: center; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 0 0 rgba(255,105,180,0); opacity: 0; transform: translateY(12px) scale(0.98); transition: opacity 0.5s cubic-bezier(0.34,1.56,0.64,1), transform 0.5s cubic-bezier(0.34,1.56,0.64,1); max-height: calc(100vh - 64px); overflow: auto; }
+      #card.show { opacity: 1; transform: translateY(0) scale(1); animation: pulseGlow 3s ease-in-out 0.7s infinite; }
+      @keyframes pulseGlow { 0%,100% { box-shadow: 0 0 28px rgba(255,105,180,0.35), 0 0 70px rgba(255,20,147,0.15); } 50% { box-shadow: 0 0 55px rgba(255,105,180,0.65), 0 0 110px rgba(255,20,147,0.35); } }
+      #bigheart { display: block; font-size: 4.2rem; margin-bottom: 18px; filter: drop-shadow(0 0 14px rgba(255,255,255,0.55)); animation: heartbeat 1.5s ease-in-out infinite; }
+      @keyframes heartbeat { 0%,100% { transform: scale(1); } 25% { transform: scale(1.14); } 50% { transform: scale(0.95); } 75% { transform: scale(1.08); } }
+      h1 { font-size: 2.7rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; background: linear-gradient(120deg, #fff 0%, #ffd6ec 45%, #fff 100%); background-size: 220% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: shimmer 3s linear infinite; }
+      @keyframes shimmer { 0% { background-position: -220% center; } 100% { background-position: 220% center; } }
+      .sub { font-style: italic; font-size: 0.88rem; color: rgba(255,255,255,0.6); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 30px; }
+      .div { width: 80px; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent); margin: 0 auto 26px; }
+      .rmk { font-style: italic; font-size: 1.13rem; color: rgba(255,255,255,0.92); line-height: 1.75; margin-bottom: 34px; text-shadow: 0 1px 8px rgba(0,0,0,0.25); }
+      .rmk strong { font-style: normal; font-weight: 700; color: #fff; -webkit-text-fill-color: #fff; }
+      .easter-dismiss { background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.42); border-radius: 50px; color: #fff; font-family: Georgia, serif; font-size: 0.88rem; letter-spacing: 3px; text-transform: uppercase; padding: 13px 38px; cursor: pointer; transition: background 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease; backdrop-filter: blur(8px); }
+      .easter-dismiss:hover { background: rgba(255,255,255,0.27); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.18); }
+      #ticker { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.28); backdrop-filter: blur(10px); padding: 9px 0; overflow: hidden; z-index: 14030; border-top: 1px solid rgba(255,255,255,0.14); opacity: 0; transition: opacity 0.6s ease 0.4s; }
+      #ticker.show { opacity: 1; }
+      #ticker-inner { display: inline-block; white-space: nowrap; animation: tickerScroll 24s linear infinite; font-family: 'Courier New', Courier, monospace; font-size: 0.77rem; color: rgba(255,255,255,0.68); letter-spacing: 2px; }
+      @keyframes tickerScroll { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
+    </style>
+
+    <div id="easter-root">
+      <div id="bg"></div>
+
+      <div id="card">
+        <span id="bigheart">💗</span>
+        <h1>METAR LOVE</h1>
+        <p class="sub">ICAO: LOVE &nbsp;·&nbsp; 14/02 02:14Z</p>
+        <div class="div"></div>
+        <p class="rmk">Wind calm. Visibility good.<br><strong>Vicinity fog of love.</strong><br><br><em>Made with love for the most beautiful<br>girl I've ever seen.</em></p>
+        <button class="easter-dismiss" id="easter-dismiss-btn">✦ &nbsp; dismiss &nbsp; ✦</button>
+      </div>
+
+      <div id="ticker">
+        <span id="ticker-inner"></span>
+      </div>
+    </div>
+  </template>
+
   <!-- App script -->
   <script src="app.js"></script>
 </body>

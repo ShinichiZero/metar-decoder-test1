@@ -471,14 +471,61 @@ function renderResults(parsed) {
 /* ================================================================
    EASTER EGG OVERLAY
    ================================================================ */
+function _spawnHeart() {
+  const HEARTS = ['💗','💓','💕','💞','🩷','💝','💖','💘'];
+  const el = document.createElement('span');
+  el.className = 'fheart';
+  el.textContent = HEARTS[Math.floor(Math.random() * HEARTS.length)];
+  const size = 1.2 + Math.random() * 2.5;
+  const left = Math.random() * 100;
+  const dur  = 5 + Math.random() * 6;
+  const delay = Math.random() * 2;
+  el.style.cssText = `left: ${left}vw; font-size: ${size}rem; animation-duration: ${dur}s; animation-delay: ${delay}s; filter: drop-shadow(0 0 6px rgba(255,105,180,0.75));`;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), (dur + delay + 1) * 1000);
+}
+
+function _ensureEasterTemplate() {
+  if (document.getElementById('easter-root')) return;
+  const tpl = document.getElementById('easter-template');
+  if (!tpl) return;
+  const clone = tpl.content.cloneNode(true);
+  document.body.appendChild(clone);
+
+  // Populate ticker text from EASTER_EGG_METAR
+  const inner = document.getElementById('ticker-inner');
+  if (inner) inner.textContent = Array(6).fill('💗  ' + EASTER_EGG_METAR + '  ').join('');
+
+  // Wire dismiss button
+  const dismissBtn = document.getElementById('easter-dismiss-btn');
+  if (dismissBtn) dismissBtn.addEventListener('click', dismissEasterEgg);
+}
+
 function showEasterEgg() {
-  const overlay = document.getElementById('easter-egg-overlay');
-  if (overlay) overlay.classList.add('visible');
+  _ensureEasterTemplate();
+  const root = document.getElementById('easter-root');
+  const bg = document.getElementById('bg');
+  const ticker = document.getElementById('ticker');
+  const card = document.getElementById('card');
+  if (root) root.classList.add('visible');
+  if (bg) bg.classList.add('on');
+  if (ticker) ticker.classList.add('show');
+  setTimeout(() => { if (card) card.classList.add('show'); }, 80);
+
+  // initial burst
+  for (let i = 0; i < 22; i++) _spawnHeart();
+  if (window._heartInterval) clearInterval(window._heartInterval);
+  window._heartInterval = setInterval(_spawnHeart, 800);
 }
 
 function dismissEasterEgg() {
-  const overlay = document.getElementById('easter-egg-overlay');
-  if (overlay) overlay.classList.remove('visible');
+  if (window._heartInterval) { clearInterval(window._heartInterval); window._heartInterval = null; }
+  const root = document.getElementById('easter-root');
+  const bg = document.getElementById('bg'); if (bg) bg.classList.remove('on');
+  const ticker = document.getElementById('ticker'); if (ticker) ticker.classList.remove('show');
+  const card = document.getElementById('card'); if (card) card.classList.remove('show');
+  if (root) root.classList.remove('visible');
+  document.querySelectorAll('.fheart').forEach(h => h.remove());
 }
 
 /* ================================================================
